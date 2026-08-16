@@ -611,6 +611,31 @@
       padding: 10px 16px;
       font-weight: 800;
     }
+    #cardShot { padding: 2px 0 8px; }
+    .save-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      background: rgba(7, 3, 15, .92);
+      padding: 18px 16px 40px;
+      overflow: auto;
+    }
+    .save-overlay.on { display: block; }
+    .save-overlay img {
+      display: block;
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto 12px;
+      border: 1px solid var(--gold);
+    }
+    .save-overlay p {
+      text-align: center;
+      color: #f7efd6;
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
+    .save-overlay .print-btn { display: block; margin: 8px auto 0; }
 
     footer {
       max-width: var(--max);
@@ -989,36 +1014,39 @@
         <div class="field"><label for="f-er">지정 병원 · 위치</label><input id="f-er" placeholder="병원명 · 주소 · 전화" /></div>
       </div>
       <div class="pocket">
-        <h2 id="pocketTitle">개인 소지 카드</h2>
-        <p id="pocketLead">사나이픽처스 · 나 혼자만 레벨업 — 2026.08.16 거미 보스룸</p>
-        <div class="pocket-card" id="pocketCard">
-          <h3>PERSONAL SAFETY CARD</h3>
-          <div class="pocket-meta">
-            <span id="c-name">이름: —</span>
-            <span id="c-team">소속: —</span>
-          </div>
-          <div class="pocket-cols">
-            <div>
-              <h4>이 팀 핵심 수칙</h4>
-              <ul id="c-rules"></ul>
+        <div id="cardShot">
+          <h2 id="pocketTitle">개인 소지 카드</h2>
+          <p id="pocketLead">사나이픽처스 · 나 혼자만 레벨업 — 2026.08.16 거미 보스룸</p>
+          <div class="pocket-card" id="pocketCard">
+            <h3>PERSONAL SAFETY CARD</h3>
+            <div class="pocket-meta">
+              <span id="c-name">이름: —</span>
+              <span id="c-team">소속: —</span>
             </div>
-            <div class="evac">
-              <h4>위험 시 · 화재 대피</h4>
-              <ul id="c-evac"></ul>
+            <div class="pocket-cols">
+              <div>
+                <h4>이 팀 핵심 수칙</h4>
+                <ul id="c-rules"></ul>
+              </div>
+              <div class="evac">
+                <h4>위험 시 · 화재 대피</h4>
+                <ul id="c-evac"></ul>
+              </div>
             </div>
-          </div>
-          <div class="contacts">
-            <ul>
-              <li>위치: 연천 21세기 스튜디오 · 거미 보스룸 · 황지로 240-23</li>
-              <li>응급 구조대: 119 · 군남 119 안전센터 031-830-0541 (5.2km)</li>
-              <li>연천소방서: 031-830-0119 (6.0km)</li>
-              <li id="c-er">지정 병원: 연천군 보건의료원 031-839-4119 (6.3km)</li>
-              <li id="c-leads">이 팀 책임자: —</li>
-              <li>안전관련 문의: (주)류앤씨안전보건기술연구원 <a class="phone-link" href="tel:15518319">1551-8319</a></li>
-            </ul>
+            <div class="contacts">
+              <ul>
+                <li>위치: 연천 21세기 스튜디오 · 거미 보스룸 · 황지로 240-23</li>
+                <li>응급 구조대: 119 · 군남 119 안전센터 031-830-0541 (5.2km)</li>
+                <li>연천소방서: 031-830-0119 (6.0km)</li>
+                <li id="c-er">지정 병원: 연천군 보건의료원 031-839-4119 (6.3km)</li>
+                <li id="c-leads">이 팀 책임자: —</li>
+                <li>안전관련 문의: (주)류앤씨안전보건기술연구원 1551-8319</li>
+              </ul>
+            </div>
           </div>
         </div>
-        <button class="print-btn" type="button" id="printBtn">이 카드 인쇄 / PDF 저장</button>
+        <button class="print-btn" type="button" id="printBtn">카드 이미지 저장</button>
+        <p class="hint">휴대폰은 공유 화면에서 ‘이미지 저장’ 또는 ‘사진에 추가’를 누르면 사진첩에 들어갑니다.</p>
       </div>
     </section>
 
@@ -1026,6 +1054,12 @@
       <strong>SANAI PICTURES  ·  나 혼자만 레벨업</strong>
       <p>2026.08.16 거미 보스룸 현장 안전수칙. 위험성평가·팀별 안전보건점검표·일일촬영계획표를 작업자 행동 중심으로 재구성했습니다. TBM, 허가, 자격, 작업계획서를 대체하지 않습니다.</p>
     </footer>
+  </div>
+
+  <div class="save-overlay" id="saveOverlay" hidden>
+    <p>이미지를 길게 눌러 사진첩에 저장하세요.</p>
+    <img id="savePreview" alt="개인 소지 카드" />
+    <button class="print-btn" type="button" id="saveClose">닫기</button>
   </div>
 
   <nav class="dock">
@@ -1552,7 +1586,79 @@
       });
     });
 
-    document.getElementById("printBtn").addEventListener("click", () => window.print());
+    document.getElementById("printBtn").addEventListener("click", saveCardImage);
+    document.getElementById("saveClose").addEventListener("click", () => {
+      const overlay = document.getElementById("saveOverlay");
+      overlay.classList.remove("on");
+      overlay.hidden = true;
+      const img = document.getElementById("savePreview");
+      if (img.dataset.url) URL.revokeObjectURL(img.dataset.url);
+      img.removeAttribute("src");
+      img.dataset.url = "";
+    });
+
+    function loadHtml2Canvas() {
+      if (window.html2canvas) return Promise.resolve(window.html2canvas);
+      return new Promise((resolve, reject) => {
+        const s = document.createElement("script");
+        s.src = "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
+        s.onload = () => resolve(window.html2canvas);
+        s.onerror = () => reject(new Error("이미지 저장 도구를 불러오지 못했습니다."));
+        document.head.appendChild(s);
+      });
+    }
+
+    async function saveCardImage() {
+      const btn = document.getElementById("printBtn");
+      const prev = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = "이미지 만드는 중…";
+      try {
+        const h2c = await loadHtml2Canvas();
+        const el = document.getElementById("cardShot");
+        const canvas = await h2c(el, {
+          scale: Math.min(2, window.devicePixelRatio || 2),
+          backgroundColor: "#120c1c",
+          useCORS: true,
+          logging: false
+        });
+        const blob = await new Promise((resolve, reject) => {
+          canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("이미지 변환 실패"))), "image/png");
+        });
+        const fileName = "나혼렙_안전카드.png";
+        const file = new File([blob], fileName, { type: "image/png" });
+        let shared = false;
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({ files: [file], title: "개인 소지 카드" });
+            shared = true;
+          } catch (err) {
+            if (err && err.name === "AbortError") shared = true;
+          }
+        }
+        if (!shared) {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          const overlay = document.getElementById("saveOverlay");
+          const img = document.getElementById("savePreview");
+          if (img.dataset.url) URL.revokeObjectURL(img.dataset.url);
+          img.src = url;
+          img.dataset.url = url;
+          overlay.hidden = false;
+          overlay.classList.add("on");
+        }
+      } catch (err) {
+        alert("이미지를 만들지 못했습니다. 화면을 캡처해 주세요.");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = prev;
+      }
+    }
 
     document.getElementById("menuBtn").addEventListener("click", () => {
       const nav = document.getElementById("topNav");
