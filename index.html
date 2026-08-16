@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#07030f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>나 혼자만 레벨업 | 현장 안전수칙 — 사나이픽처스</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Share+Tech+Mono&display=swap" />
+  <style>
+    :root {
+      --bg: #07030f;
+      --void: #0b0614;
+      --card: rgba(16, 10, 28, .82);
+      --line: rgba(168, 85, 247, .28);
+      --line-2: rgba(103, 232, 249, .22);
+      --text: #f4f0ff;
+      --muted: #b7a8d4;
+      --dim: #7d7196;
+      --violet: #a855f7;
+      --violet-2: #c084fc;
+      --glow: #7c3aed;
+      --cyan: #67e8f9;
+      --gold: #e8c36a;
+      --danger: #ff4d6d;
+      --ok: #5eead4;
+      --max: 1100px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      word-break: keep-all;
+      overflow-x: hidden;
+    }
+    body.gated { overflow: hidden; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+    :focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+    .hud { font-family: "Share Tech Mono", "Orbitron", monospace; letter-spacing: .08em; }
+
+    .fx {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(900px 520px at 82% -8%, rgba(124, 58, 237, .38), transparent 55%),
+        radial-gradient(640px 380px at 8% 12%, rgba(14, 165, 233, .12), transparent 50%),
+        radial-gradient(500px 300px at 50% 100%, rgba(88, 28, 135, .2), transparent 55%);
+    }
+    .fx::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: .16;
+      background-image:
+        linear-gradient(rgba(168,85,247,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(168,85,247,.08) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse at 50% 20%, #000 20%, transparent 75%);
+    }
+    .grain {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      opacity: .08;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+    .wrap { position: relative; z-index: 1; }
+
+    .gate-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      overflow: auto;
+      background:
+        radial-gradient(900px 520px at 82% -8%, rgba(124, 58, 237, .38), transparent 55%),
+        radial-gradient(640px 380px at 8% 12%, rgba(14, 165, 233, .12), transparent 50%),
+        #07030f;
+      padding: 28px 18px 48px;
+    }
+    .gate-screen.hidden { display: none; }
+    .gate-box {
+      max-width: 760px;
+      margin: 0 auto;
+      border: 1px solid var(--line);
+      background: rgba(12, 8, 22, .92);
+      padding: 22px 20px 24px;
+      box-shadow: 0 0 50px rgba(124,58,237,.12);
+    }
+    .gate-box .sub-label { margin-bottom: 8px; }
+    .gate-box h1 {
+      font-size: clamp(28px, 6vw, 42px);
+      line-height: 1.15;
+      margin: 8px 0 6px;
+      text-shadow: 0 0 40px rgba(168,85,247,.35);
+    }
+    .gate-box .lead { font-size: 15px; color: #ddd3f0; margin-bottom: 18px; }
+    .gate-step {
+      font-family: "Orbitron", sans-serif;
+      font-size: 11px;
+      letter-spacing: .16em;
+      color: var(--gold);
+      margin: 18px 0 8px;
+    }
+    .gate-box .team-grid { margin-bottom: 8px; }
+    .gate-name { opacity: .38; pointer-events: none; }
+    .gate-name.ready { opacity: 1; pointer-events: auto; }
+    .enter-btn {
+      width: 100%;
+      margin-top: 16px;
+      padding: 14px 16px;
+      font-weight: 800;
+      font-size: 16px;
+      background: linear-gradient(180deg, #67e8f9, #22d3ee);
+      color: #041016;
+      border: 0;
+    }
+    .enter-btn:disabled { opacity: .35; cursor: not-allowed; }
+    .gate-warn { font-size: 12px; color: var(--dim); margin-top: 10px; }
+
+    header.top {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(18px);
+      background: rgba(7, 3, 15, .78);
+      border-bottom: 1px solid var(--line);
+    }
+    .top-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .logo-mark {
+      width: 40px; height: 40px;
+      flex-shrink: 0;
+      filter: drop-shadow(0 0 10px rgba(168,85,247,.7));
+    }
+    .logo-text { display: flex; flex-direction: column; min-width: 0; }
+    .logo-text strong { font-size: 15px; letter-spacing: -.02em; }
+    .logo-text span {
+      font-family: "Share Tech Mono", monospace;
+      font-size: 10px;
+      color: var(--gold);
+      letter-spacing: .16em;
+    }
+    .player-chip {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--cyan);
+      max-width: 220px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .player-chip button {
+      color: var(--gold);
+      text-decoration: underline;
+      margin-left: 6px;
+      font-size: 11px;
+    }
+    .nav-desktop { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+    .nav-desktop a {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 6px 9px;
+      border-radius: 4px;
+    }
+    .nav-desktop a:hover { color: var(--cyan); background: rgba(103,232,249,.06); }
+    .menu-btn {
+      display: none;
+      width: 40px; height: 40px;
+      border: 1px solid var(--line);
+      color: var(--violet-2);
+    }
+
+    .hero {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 36px 18px 18px;
+      position: relative;
+    }
+    .hero-gate {
+      position: absolute;
+      right: -40px;
+      top: -30px;
+      width: 340px;
+      height: 340px;
+      opacity: .55;
+      pointer-events: none;
+    }
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: "Share Tech Mono", monospace;
+      font-size: 12px;
+      letter-spacing: .18em;
+      color: var(--cyan);
+      margin-bottom: 12px;
+    }
+    .kicker i {
+      width: 8px; height: 8px;
+      background: var(--cyan);
+      box-shadow: 0 0 0 4px rgba(103,232,249,.18), 0 0 16px var(--cyan);
+    }
+    .prod {
+      font-family: "Orbitron", sans-serif;
+      font-size: 11px;
+      letter-spacing: .22em;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-size: clamp(34px, 7vw, 62px);
+      line-height: 1.12;
+      letter-spacing: -.04em;
+      font-weight: 800;
+      margin-bottom: 8px;
+      text-shadow: 0 0 40px rgba(168,85,247,.35);
+    }
+    .eng {
+      font-family: "Orbitron", sans-serif;
+      font-size: 13px;
+      letter-spacing: .28em;
+      color: var(--violet-2);
+      margin-bottom: 16px;
+    }
+    .lead { font-size: 16px; color: #ddd3f0; max-width: 720px; margin-bottom: 18px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+    .chip {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      background: rgba(124,58,237,.12);
+      color: var(--violet-2);
+    }
+    .chip .rank {
+      font-family: "Orbitron", sans-serif;
+      color: var(--gold);
+      margin-right: 6px;
+    }
+    .chip.hot { border-color: rgba(255,77,109,.45); color: #ffd0d8; background: rgba(255,77,109,.1); }
+
+    .sub-label {
+      font-family: "Orbitron", sans-serif;
+      font-size: 11px;
+      letter-spacing: .16em;
+      color: var(--cyan);
+    }
+
+    .today {
+      position: relative;
+      background: linear-gradient(180deg, rgba(20,12,36,.92), rgba(10,6,18,.92));
+      border: 1px solid var(--line);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .today h2 { font-size: 20px; margin: 6px 0; }
+    .today p { font-size: 14px; color: #d5c8ea; }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .meta {
+      background: rgba(8,6,16,.75);
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+    }
+    .meta b { display: block; font-size: 13px; }
+    .meta small {
+      font-family: "Share Tech Mono", monospace;
+      font-size: 10px;
+      letter-spacing: .1em;
+      color: var(--gold);
+    }
+    .timeline { display: grid; gap: 6px; margin-top: 10px; }
+    .timeline li {
+      list-style: none;
+      font-size: 13px;
+      color: #d5c8ea;
+      padding: 8px 10px;
+      border-left: 2px solid var(--cyan);
+      background: rgba(103,232,249,.05);
+    }
+    .timeline li.risk { border-color: var(--danger); background: rgba(255,77,109,.08); }
+
+    .notice {
+      position: relative;
+      background: linear-gradient(180deg, rgba(14, 28, 48, .85), rgba(10, 8, 22, .9));
+      border: 1px solid rgba(103,232,249,.4);
+      box-shadow: 0 0 0 1px rgba(103,232,249,.08), 0 0 40px rgba(103,232,249,.08);
+      padding: 16px 18px;
+      margin-bottom: 8px;
+    }
+    .notice::before, .notice::after,
+    .sys::before, .sys::after,
+    .today::before, .today::after,
+    .gate-box::before, .gate-box::after {
+      content: "";
+      position: absolute;
+      width: 14px; height: 14px;
+      border: 2px solid var(--cyan);
+    }
+    .notice::before, .sys::before, .today::before, .gate-box::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
+    .notice::after, .sys::after, .today::after, .gate-box::after { top: -1px; right: -1px; border-left: 0; border-bottom: 0; }
+    .corners { position: relative; }
+    .corners::before, .corners::after {
+      content: "";
+      position: absolute;
+      width: 14px; height: 14px;
+      border: 2px solid var(--cyan);
+    }
+    .corners::before { bottom: -1px; left: -1px; border-right: 0; border-top: 0; }
+    .corners::after { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
+    .notice small, .sys-bar .tag {
+      font-family: "Orbitron", sans-serif;
+      font-size: 11px;
+      letter-spacing: .18em;
+      color: var(--cyan);
+    }
+    .notice p { font-size: 18px; font-weight: 800; margin-top: 6px; }
+
+    .site-fields {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 8px 0 6px;
+    }
+    .field {
+      background: rgba(16,10,28,.8);
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+    }
+    .field label {
+      display: block;
+      font-family: "Share Tech Mono", monospace;
+      font-size: 10px;
+      letter-spacing: .12em;
+      color: var(--dim);
+      margin-bottom: 4px;
+    }
+    .field input {
+      width: 100%;
+      background: transparent;
+      border: 0;
+      outline: none;
+      color: var(--text);
+      font: inherit;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    .hint { font-size: 12px; color: var(--dim); margin-bottom: 8px; }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+    .team-btn {
+      text-align: left;
+      border: 1px solid var(--line);
+      background: rgba(8,6,16,.75);
+      padding: 10px 12px;
+      color: var(--text);
+    }
+    .team-btn small {
+      display: block;
+      font-family: "Share Tech Mono", monospace;
+      font-size: 10px;
+      letter-spacing: .1em;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+    .team-btn b { font-size: 14px; display: block; }
+    .team-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+    .team-btn.on {
+      border-color: var(--cyan);
+      background: rgba(103,232,249,.1);
+      box-shadow: 0 0 18px rgba(103,232,249,.12);
+    }
+
+    section, .sys { scroll-margin-top: 76px; }
+    section { max-width: var(--max); margin: 0 auto; padding: 16px 18px 6px; }
+    .sec-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 16px 0 12px;
+    }
+    .sec-head h2 { font-size: clamp(22px, 4vw, 30px); letter-spacing: -.02em; }
+    .sec-no {
+      font-family: "Orbitron", sans-serif;
+      font-size: 11px;
+      letter-spacing: .16em;
+      color: var(--gold);
+    }
+
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .card, .item {
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 16px;
+    }
+    .card h3, .item h4 { font-size: 16px; margin-bottom: 8px; color: #efe7ff; }
+    .card p, .card li, .item p, .item li { font-size: 14px; color: #d5c8ea; }
+    .card ul, .item ul { padding-left: 18px; display: grid; gap: 6px; }
+    .card.gold { border-color: rgba(232,195,106,.35); }
+
+    .sys {
+      position: relative;
+      background: linear-gradient(180deg, rgba(20,12,36,.92), rgba(10,6,18,.92));
+      border: 1px solid var(--line);
+      box-shadow: 0 0 50px rgba(124,58,237,.08);
+      margin-bottom: 14px;
+    }
+    .sys-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(124,58,237,.1);
+    }
+    .sys-bar .tag.warn { color: var(--danger); }
+    .sys-bar b { flex: 1; font-size: 15px; }
+    .rank-badge {
+      font-family: "Orbitron", sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      color: #1a1204;
+      background: linear-gradient(180deg, #f3d789, #c9a24a);
+      padding: 3px 8px;
+      min-width: 28px;
+      text-align: center;
+    }
+    .sys-body { padding: 16px; }
+    .sys-body .sub {
+      font-family: "Share Tech Mono", monospace;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .num-list { padding-left: 22px; display: grid; gap: 8px; }
+    .num-list li { font-size: 14px; color: #d5c8ea; }
+
+    .count {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .count span {
+      display: block;
+      text-align: center;
+      font-family: "Orbitron", sans-serif;
+      font-weight: 800;
+      padding: 12px 8px;
+      border: 1px solid var(--line);
+      background: rgba(124,58,237,.1);
+    }
+    .count span:last-child {
+      color: var(--danger);
+      border-color: rgba(255,77,109,.45);
+      box-shadow: 0 0 18px rgba(255,77,109,.15);
+    }
+
+    .emerg {
+      position: relative;
+      background:
+        radial-gradient(700px 220px at 10% 0%, rgba(255,77,109,.16), transparent 50%),
+        rgba(28, 8, 16, .9);
+      border: 1px solid rgba(255,77,109,.4);
+      padding: 18px;
+    }
+    .emerg h2 { color: #ffd0d8; }
+    .emerg-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    .shout { display: grid; place-items: center; margin: 8px 0 14px; }
+    .shout strong {
+      font-size: clamp(32px, 7vw, 48px);
+      letter-spacing: .12em;
+      padding: 14px 28px;
+      border: 1px solid rgba(255,77,109,.5);
+      background: rgba(255,77,109,.12);
+      color: #ffd0d8;
+      text-shadow: 0 0 24px rgba(255,77,109,.45);
+    }
+    .contact-board { margin-top: 16px; }
+    .contact-person {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 16px;
+      margin-bottom: 12px;
+      padding: 12px 14px;
+      border: 1px solid rgba(232,195,106,.35);
+      background: rgba(20, 12, 8, .55);
+    }
+    .contact-person strong { color: var(--gold); }
+    .contact-person a, .phone-link {
+      font-family: "Share Tech Mono", monospace;
+      color: var(--cyan);
+      letter-spacing: .04em;
+    }
+    .lead-box {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .lead-item {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 6px 12px;
+      padding: 10px 12px;
+      border: 1px solid rgba(103,232,249,.28);
+      background: rgba(8,6,16,.7);
+    }
+    .lead-item b { color: #efe7ff; }
+    .contact-tables {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .contact-tables article {
+      background: rgba(20,8,12,.7);
+      border: 1px solid rgba(255,77,109,.28);
+      padding: 12px;
+    }
+    .contact-tables h3 { font-size: 15px; margin-bottom: 8px; color: #ffd0d8; }
+    .contact-tables p { font-size: 12px; color: #d5c8ea; margin-bottom: 8px; }
+    .contact-tables table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .contact-tables th, .contact-tables td {
+      text-align: left;
+      padding: 7px 4px;
+      border-bottom: 1px solid rgba(255,77,109,.18);
+      color: #efe7ff;
+      vertical-align: top;
+    }
+    .contact-tables th { color: var(--gold); font-size: 11px; letter-spacing: .08em; }
+    .contact-tables td:last-child { white-space: nowrap; color: var(--dim); }
+
+    .pocket {
+      background: linear-gradient(180deg, #1a1328, #120c1c);
+      border: 1px solid var(--gold);
+      color: #f7efd6;
+      padding: 22px;
+    }
+    .pocket h2 { color: var(--gold); }
+    .pocket p { color: #d8cba0; font-size: 14px; }
+    .pocket-card {
+      margin-top: 14px;
+      background: #0c0814;
+      border: 1px dashed rgba(232,195,106,.5);
+      padding: 16px;
+    }
+    .pocket-card h3 {
+      font-family: "Orbitron", sans-serif;
+      font-size: 16px;
+      letter-spacing: .12em;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .pocket-card ul { padding-left: 18px; display: grid; gap: 6px; font-size: 14px; color: #efe6c8; }
+    .pocket-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+      font-size: 13px;
+      color: #d8cba0;
+    }
+    .pocket-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 12px 0;
+    }
+    .pocket-cols h4 {
+      font-size: 13px;
+      letter-spacing: .08em;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .pocket-cols .evac h4 { color: #ff8fa0; }
+    .contacts { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(232,195,106,.25); }
+    .print-btn {
+      margin-top: 12px;
+      background: var(--gold);
+      color: #1a1204;
+      padding: 10px 16px;
+      font-weight: 800;
+    }
+
+    footer {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 28px 18px 110px;
+      color: var(--dim);
+      font-size: 12px;
+    }
+    footer strong {
+      color: var(--gold);
+      display: block;
+      margin-bottom: 6px;
+      letter-spacing: .14em;
+      font-family: "Orbitron", sans-serif;
+      font-size: 11px;
+    }
+
+    .dock {
+      position: fixed;
+      left: 12px; right: 12px; bottom: 12px;
+      z-index: 50;
+      display: none;
+      background: rgba(10,6,18,.92);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(16px);
+      padding: 8px;
+      justify-content: space-between;
+    }
+    .dock a {
+      flex: 1;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      padding: 8px 2px;
+    }
+
+    @media (max-width: 980px) {
+      .nav-desktop {
+        display: none;
+        position: absolute;
+        top: 60px; right: 12px; left: 12px;
+        background: #120c1c;
+        padding: 10px;
+        border: 1px solid rgba(168,85,247,.35);
+        flex-direction: column;
+      }
+      .nav-desktop.open { display: flex; }
+      .menu-btn { display: grid; place-items: center; }
+      .player-chip { display: none; }
+      .grid-3, .emerg-grid, .site-fields, .count, .team-grid, .pocket-cols, .meta-grid, .contact-tables { grid-template-columns: 1fr 1fr; }
+      .hero-gate { width: 220px; height: 220px; right: -20px; opacity: .35; }
+      .dock { display: flex; }
+      footer { padding-bottom: 120px; }
+    }
+    @media (max-width: 640px) {
+      .grid-3, .emerg-grid, .site-fields, .count, .team-grid, .pocket-cols, .meta-grid, .contact-tables { grid-template-columns: 1fr; }
+      .hero { padding-top: 22px; }
+    }
+
+    @media print {
+      .fx, .grain, header.top, .dock, .menu-btn, .print-btn, .hint, .hero-gate, .gate-screen { display: none !important; }
+      body * { visibility: hidden; }
+      .pocket, .pocket * { visibility: visible; }
+      .pocket {
+        position: absolute;
+        left: 0; top: 0;
+        width: 100%;
+        background: #fff;
+        color: #111;
+        border-color: #111;
+      }
+      .pocket h2, .pocket-card h3, .pocket-cols h4, .pocket p, .pocket-card ul, .pocket-meta, .contacts, .contacts li { color: #111 !important; }
+      .pocket-card { background: #fff; border-color: #111; }
+      .pocket-cols .evac h4 { color: #111; }
+    }
+  </style>
+</head>
+<body class="gated">
+  <div class="fx"></div>
+  <div class="grain"></div>
+
+  <div class="gate-screen" id="gateScreen">
+    <div class="gate-box corners">
+      <div class="kicker"><i></i> SYSTEM · PLAYER LOGIN</div>
+      <p class="prod">2026.08.16 · YEONCHEON 21ST STUDIO</p>
+      <h1>현장 안전수칙</h1>
+      <p class="eng">SOLO LEVELING · SET SAFETY</p>
+      <p class="lead">소속 팀을 먼저 선택한 뒤 이름을 기입하면 오늘 촬영 수칙에 들어갑니다. 팀별 행동 수칙은 위험성평가·안전보건점검표 기준으로 구성했습니다.</p>
+      <p class="gate-step" id="gateStep">STEP 1 / 2 · 소속 팀 선택</p>
+      <div class="team-grid" id="gateTeamGrid"></div>
+      <div class="gate-name" id="gateNameBox">
+        <p class="gate-step">STEP 2 / 2 · 이름 기입</p>
+        <div class="site-fields" style="grid-template-columns: 1.4fr 1fr; margin-top: 0;">
+          <div class="field">
+            <label for="g-name">본인 이름</label>
+            <input id="g-name" placeholder="성명을 입력하세요" autocomplete="name" disabled />
+          </div>
+          <div class="field">
+            <label for="g-role">파트 · 직책 (선택)</label>
+            <input id="g-role" placeholder="예: 1st AC, 조명 막내" />
+          </div>
+        </div>
+      </div>
+      <button class="enter-btn" id="enterBtn" type="button" disabled>수칙 확인하기</button>
+      <p class="gate-warn">이 기기에만 저장됩니다. TBM·허가·자격을 대체하지 않습니다.</p>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <header class="top">
+      <div class="top-inner">
+        <div class="brand">
+          <svg class="logo-mark" viewBox="0 0 64 64" aria-hidden="true">
+            <defs>
+              <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#67e8f9"/>
+                <stop offset="1" stop-color="#a855f7"/>
+              </linearGradient>
+            </defs>
+            <polygon points="32,4 58,18 58,46 32,60 6,46 6,18" fill="none" stroke="url(#g)" stroke-width="2.2"/>
+            <polygon points="32,16 46,24 46,40 32,48 18,40 18,24" fill="none" stroke="#c084fc" stroke-width="1.4"/>
+            <circle cx="32" cy="32" r="4" fill="#67e8f9"/>
+          </svg>
+          <div class="logo-text">
+            <strong>나 혼자만 레벨업</strong>
+            <span>SANAI PICTURES</span>
+          </div>
+        </div>
+        <div class="player-chip" id="playerChip"></div>
+        <nav class="nav-desktop" id="topNav">
+          <a href="#today">오늘</a>
+          <a href="#common">공통</a>
+          <a href="#myteam">내 팀</a>
+          <a href="#emergency">비상</a>
+          <a href="#card">카드</a>
+        </nav>
+        <button class="menu-btn" id="menuBtn" type="button" aria-label="메뉴" aria-expanded="false">☰</button>
+      </div>
+    </header>
+
+    <section class="hero" id="top">
+      <svg class="hero-gate" viewBox="0 0 400 400" aria-hidden="true">
+        <defs>
+          <radialGradient id="pg" cx="50%" cy="50%" r="50%">
+            <stop offset="0" stop-color="#67e8f9" stop-opacity=".35"/>
+            <stop offset=".45" stop-color="#7c3aed" stop-opacity=".2"/>
+            <stop offset="1" stop-color="#07030f" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <circle cx="200" cy="200" r="150" fill="url(#pg)"/>
+        <circle cx="200" cy="200" r="118" fill="none" stroke="rgba(168,85,247,.45)" stroke-width="2"/>
+        <circle cx="200" cy="200" r="88" fill="none" stroke="rgba(103,232,249,.35)" stroke-width="1.5"/>
+        <circle cx="200" cy="200" r="58" fill="none" stroke="rgba(232,195,106,.25)" stroke-width="1"/>
+      </svg>
+      <div class="kicker"><i></i> TODAY · DUNGEON BOSS ROOM</div>
+      <p class="prod">PRODUCED BY SANAI PICTURES · 감독 이해준 · 김병서 · 프로듀서 박민정</p>
+      <h1>나 혼자만 레벨업</h1>
+      <p class="eng">SOLO LEVELING · 2026.08.16 SET SAFETY</p>
+      <p class="lead">거미 보스룸 실내 촬영. 와이어 액션, 폭파 분진, 대형 크리처, 어두운 세트·사다리가 겹칩니다. 위험 씬에서는 통제 신호 전 움직이지 마십시오.</p>
+      <div class="chips">
+        <span class="chip hot">전곡 최고 29°C · 고습 · 소나기·뇌우</span>
+        <span class="chip"><span class="rank">S</span>와이어 세팅 3회</span>
+        <span class="chip"><span class="rank">S</span>폭파 분진</span>
+        <span class="chip"><span class="rank">A</span>어두운 던전 · 사다리</span>
+      </div>
+      <div class="notice corners">
+        <small>NOTICE · STOP WORK AUTHORITY</small>
+        <p>모든 스태프는 위험 작업을 중지할 수 있는 권한을 가집니다. 위험 목격 시 “스톱!”</p>
+      </div>
+    </section>
+
+    <section id="today">
+      <article class="today corners">
+        <div class="sub-label">CALL SHEET · 2026.08.16 SUN</div>
+        <h2>오늘 촬영 — (던전) 거미 보스룸</h2>
+        <p>연천 21세기 스튜디오 · 경기도 연천군 군남면 황지로 240-23 · 실내 보스룸 · 액션대역 · 크리처</p>
+        <div class="meta-grid">
+          <div class="meta"><small>CALL / WRAP</small><b>12:00 집합 · 21:00 종료</b></div>
+          <div class="meta"><small>MEAL</small><b>18:00–19:00 (1시간)</b></div>
+          <div class="meta"><small>WEATHER · 전곡</small><b>현재 25°C · 체감 30°C · 최고 29 / 최저 23</b></div>
+          <div class="meta"><small>SKY / RAIN</small><b>구름 많음 · 습도 91% · 오후 소나기·뇌우</b></div>
+        </div>
+        <p class="hint" style="margin-top:8px">기상은 연천 전곡 기준 오늘(8/16) 실황·예보. 콜시트의 35°C 맑음과 다릅니다. 고습·소나기·폭우 누수 시 전기기구 누전에 맞춰 행동하세요.</p>
+        <ul class="timeline">
+          <li>12:00–13:10 준비 및 초기 컷 — 거미 다리·진우 돌진. 어두운 세트 이동 시 작업등.</li>
+          <li class="risk">13:10–13:30 센터 와이어 세팅·테스트 — 폴 존 출입 금지. 리거 클리어 전 대기.</li>
+          <li class="risk">13:30–15:10 와이어 + 폭파 분진 액션 — 거미줄·다리 회피, 14:40 지면 타격 폭파. 카운트다운 전 레드존 진입 금지.</li>
+          <li>15:10–15:40 크리처 클로즈업·돌진.</li>
+          <li class="risk">15:40–16:00 와이어 세팅·테스트 — 동일 통제.</li>
+          <li class="risk">16:00–17:40 와이어 액션 연속 — 독단검 지면 타격으로 제동. 구르기·점프 동선을 밟지 말 것.</li>
+          <li class="risk">17:40–18:00 점프 액션 와이어 세팅 변경 — 앵커·하중 재확인 전 접근 금지.</li>
+          <li>18:00–19:00 식사. 고습·슈트 착용자는 수분 보충. 소나기 시 외부 전원·누수 여부를 조명팀이 확인.</li>
+          <li class="risk">19:00–21:00 폭파·점프 공격·구르기·거미 다리 POV. 마지막 컷도 통제 신호 준수. 21:00 종료.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section id="overview">
+      <div class="sec-head">
+        <h2>1. 교육 개요</h2>
+        <span class="sec-no">QUEST 01</span>
+      </div>
+      <div class="grid-3">
+        <article class="card">
+          <h3>목적</h3>
+          <p>오늘 고위험 요소(와이어, 폭파 분진, 크리처, 고소·사다리, 암부, 소나기 누수·누전)에서 작업자 행동 중심으로 사고를 막고, 화재 시 대피 체계를 숙지합니다.</p>
+        </article>
+        <article class="card">
+          <h3>근거</h3>
+          <p>나혼렙 위험성평가(조명·촬영·특수효과·무술)와 촬영장 팀별 안전보건점검표(미술·SFX·촬영·무술·소품·조명·분장)를 행동 수칙으로 재구성했습니다.</p>
+        </article>
+        <article class="card gold">
+          <h3>기본 원칙</h3>
+          <p>위험 씬은 통제에 따라 행동한다. 신호가 없으면 들어가지 않는다. 누구든 “스톱!”을 외칠 수 있다.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="common">
+      <div class="sec-head">
+        <h2>2. 전 스태프 공통 행동 수칙</h2>
+        <span class="sec-no">QUEST 02</span>
+      </div>
+      <article class="sys corners">
+        <div class="sys-bar">
+          <span class="tag hud">TODAY</span>
+          <b>어두운 환경 · 사다리 · 위험 씬 통제 · 화재 대피 · 고습·소나기·누전</b>
+          <span class="rank-badge">E</span>
+        </div>
+        <div class="sys-body">
+          <p class="sub">ALL CREW — 보스룸 입실 전 숙지</p>
+          <ol class="num-list">
+            <li>어두운 던전에서는 지정 통로등으로만 이동한다. 손으로 더듬거나 거미줄·단차·케이블을 밟지 않는다.</li>
+            <li>사다리·비계·2m 이상 고소는 안전모·안전대·보조자 없이 오르지 않는다. 사다리 꼭대기에서 몸을 기울여 손뻗지 않는다.</li>
+            <li>와이어 세팅(13:10, 15:40, 17:40)과 폭파 분진 씬은 레드존이다. AD·SFX·리거 허가 전에 구경하러 가까이 가지 않는다.</li>
+            <li>위험 씬 촬영 중에는 통제 신호만 따른다. 카운트다운 중 위치를 바꾸거나 소품·조명을 고치지 않는다.</li>
+            <li>“스톱!”이 들리면 즉시 장비 가동과 촬영을 멈춘다. 컷을 살리려 레드존에 남지 않는다.</li>
+            <li>비상구 2개소와 집결지를 입실 때 눈으로 확인한다. 자재·케이블·차량이 비상구를 막으면 즉시 치우거나 AD에게 알린다.</li>
+            <li>화재·연기 시 소화 가능한 소규모만 끄고, 아니면 낮은 자세로 지정 비상구로 나간다. 화약·연료 쪽으로 몰리지 않는다.</li>
+            <li>집결지에서 팀장에게 인원을 보고하고, 안전관리자·AD 허가 전 재진입하지 않는다.</li>
+            <li>오늘 전곡 최고 29°C, 습도 높음(체감 30°C 전후). 밀폐 슈트는 테이크 사이 냉각한다. 어지럼·메스꺼움이면 그늘로 이동하고 메딕·119.</li>
+            <li>지급 PPE(안전모·안전화·보안경)를 착용한다. 통행로 최소 60cm를 막지 않는다.</li>
+          </ol>
+        </div>
+      </article>
+      <article class="sys corners" id="rain-elec">
+        <div class="sys-bar">
+          <span class="tag hud warn">TODAY</span>
+          <b>소나기·폭우 · 누수 · 전기기구·시설 누전</b>
+          <span class="rank-badge">A</span>
+        </div>
+        <div class="sys-body">
+          <p class="sub">RAIN · LEAKAGE · ELECTRIC SHOCK — 실내 보스룸도 지붕·출입구 누수에 노출</p>
+          <ol class="num-list">
+            <li>소나기·폭우가 시작되면 외부 발전기·분전반·인입 케이블을 조명 퍼스트(전기 담당)가 먼저 본다. 침수·물기가 있으면 전원을 내리고 AD에게 HOLD를 알린다.</li>
+            <li>지붕·벽·덕트·출입문 누수로 바닥·트러스·세트가 젖으면 그 구역의 조명기·콘센트·멀티탭·충전기·전기 소품 전원을 즉시 끄고 플러그를 뽑는다. 젖은 기구에 전원을 넣지 않는다.</li>
+            <li>물이 전기시설(분전반, 콘센트, 케이블 접속부, 디머, 밸러스트)에 들어가면 누전으로 감전·화재가 난다. 해당 회로를 차단하고 접근 금지 표시를 한다.</li>
+            <li>누전차단기(ELB)가 떨어지면 원인을 확인하기 전에 임의로 올리지 않는다. 조명팀·전기 담당에게 알린다.</li>
+            <li>젖은 손·젖은 장갑·젖은 신발로 스위치·플러그·분전반을 만지지 않는다. 절연 장갑 없이 활선을 만지지 않는다.</li>
+            <li>피복이 벗겨지거나 물에 잠긴 케이블, 콘센트에 물이 고인 상태는 발로 차거나 집지 말고 표시한 뒤 담당자에게 알린다.</li>
+            <li>외부에서 실내로 들어오는 케이블은 문턱에서 늘어뜨려 빗물이 선을 타고 들어오지 않게 한다(드립 루프).</li>
+            <li>찌릿함·저림·장비에서 스파크가 나면 “스톱!” 후 접촉을 끊는다. 차단 권한자만 전원을 내린다. 감전된 사람을 젖은 손으로 붙잡지 않는다.</li>
+            <li>누수 구역은 마른 뒤에 절연·접지·누전차단 동작을 확인한 다음에만 재통전한다. 급하다고 젖은 채로 촬영을 재개하지 않는다.</li>
+          </ol>
+        </div>
+      </article>
+    </section>
+
+    <section id="myteam">
+      <div class="sec-head">
+        <h2 id="myTeamTitle">3. 내 팀 핵심 안전수칙</h2>
+        <span class="sec-no">QUEST 03</span>
+      </div>
+      <article class="sys corners">
+        <div class="sys-bar">
+          <span class="tag hud">CLASS</span>
+          <b id="myTeamBar">소속 팀 수칙</b>
+          <span class="rank-badge" id="myTeamRank">S</span>
+        </div>
+        <div class="sys-body">
+          <p class="sub" id="myTeamSub">위험성평가 · 팀별 점검표 · 오늘 거미 보스룸 스케줄</p>
+          <div class="lead-box" id="myTeamLeads"></div>
+          <ol class="num-list" id="myTeamRules"></ol>
+        </div>
+      </article>
+      <article class="sys corners">
+        <div class="sys-bar">
+          <span class="tag hud warn">EVAC</span>
+          <b>이 팀 위험 시 행동 · 화재 대피</b>
+          <span class="rank-badge">!</span>
+        </div>
+        <div class="sys-body">
+          <ol class="num-list" id="myTeamEvac"></ol>
+        </div>
+      </article>
+    </section>
+
+    <section id="emergency">
+      <div class="emerg corners">
+        <div class="sec-head" style="margin-top:0">
+          <h2>4. 비상 대응</h2>
+          <span class="sec-no">WARNING</span>
+        </div>
+        <div class="shout"><strong>스톱!</strong></div>
+        <p style="text-align:center; color:#ffd0d8; margin-bottom:16px;">사고 징후나 위험 목격 시 누구나 “스톱!” — 즉시 모든 장비 가동 및 촬영 중단. 119 호출 시 위치는 ‘연천 21세기 스튜디오, 거미 보스룸, 군남면 황지로 240-23’.</p>
+        <div class="emerg-grid">
+          <article class="card" style="background:rgba(20,8,12,.7)">
+            <h3>위험 씬 통제</h3>
+            <p>폭파·와이어·크리처 구동은 카운트다운과 세이프 선언이 있기 전에 진입하지 않습니다. 신호가 없으면 대기합니다.</p>
+          </article>
+          <article class="card" style="background:rgba(20,8,12,.7)">
+            <h3>화재 대피</h3>
+            <p>비상구 2개소 이상. 연기 반대·화약고 반대 방향으로 나갑니다. 가장 가까운 소방은 군남 119 안전센터(5.2km).</p>
+          </article>
+          <article class="card" style="background:rgba(20,8,12,.7)">
+            <h3>누수 · 누전</h3>
+            <p>폭우·천장 누수로 전기기구·분전반이 젖으면 전원부터 내립니다. 누전차단기를 임의로 올리지 말고, 젖은 손으로 장비를 만지지 않습니다.</p>
+          </article>
+        </div>
+        <div class="contact-board" id="hotline">
+          <div class="contact-person">
+            <span class="sub-label">제작 책임 · 제작부장</span>
+            <strong>배광표</strong>
+            <span>제작팀</span>
+            <a class="phone-link" href="tel:01026099177">010-2609-9177</a>
+          </div>
+          <div class="contact-tables">
+            <article>
+              <h3>유관기관 · 연천 (오늘 촬영지)</h3>
+              <p>거미 보스룸 기준 거리. 응급은 119, 위치는 연천 21세기 스튜디오.</p>
+              <table>
+                <thead>
+                  <tr><th>구분</th><th>기관</th><th>전화</th><th>거리</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>소방서</td><td>연천소방서</td><td><a class="phone-link" href="tel:0318300119">031-830-0119</a></td><td>6.0km</td></tr>
+                  <tr><td>안전센터</td><td>군남 119 안전센터</td><td><a class="phone-link" href="tel:0318300541">031-830-0541</a></td><td>5.2km</td></tr>
+                  <tr><td>경찰서</td><td>연천경찰서</td><td><a class="phone-link" href="tel:0318347733">031-834-7733</a></td><td>7.1km</td></tr>
+                  <tr><td>파출소</td><td>왕징파출소</td><td><a class="phone-link" href="tel:0318339112">031-833-9112</a></td><td>3.9km</td></tr>
+                  <tr><td>병원</td><td>연천군 보건의료원</td><td><a class="phone-link" href="tel:0318394119">031-839-4119</a></td><td>6.3km</td></tr>
+                </tbody>
+              </table>
+            </article>
+            <article>
+              <h3>유관기관 · 대전 (참고)</h3>
+              <p>대전 촬영 시 사용. 오늘은 연천 번호를 우선합니다.</p>
+              <table>
+                <thead>
+                  <tr><th>구분</th><th>기관</th><th>전화</th><th>거리</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>소방서</td><td>대전소방서</td><td><a class="phone-link" href="tel:0422701513">042-270-1513</a></td><td>4.5km</td></tr>
+                  <tr><td>안전센터</td><td>월평 119 안전센터</td><td><a class="phone-link" href="tel:0422701831">042-270-1831</a></td><td>3.7km</td></tr>
+                  <tr><td>경찰서</td><td>대전둔산경찰서</td><td><a class="phone-link" href="tel:0424760112">042-476-0112</a></td><td>3.1km</td></tr>
+                  <tr><td>지구대</td><td>월평지구대</td><td><a class="phone-link" href="tel:0426005103">042-600-5103</a></td><td>4.3km</td></tr>
+                  <tr><td>병원</td><td>을지대학교병원</td><td><a class="phone-link" href="tel:0422591119">042-259-1119</a></td><td>3.5km</td></tr>
+                </tbody>
+              </table>
+            </article>
+          </div>
+        </div>
+        <div class="count">
+          <span>3</span><span>2</span><span>1</span><span>발화</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="card">
+      <div class="sec-head">
+        <h2>개인별 소지 카드</h2>
+        <span class="sec-no">INVENTORY</span>
+      </div>
+      <p class="hint">지정 병원은 연천 기준으로 넣어 두었습니다. 이 팀 책임자는 소속 팀 선택 시 카드에 자동으로 들어갑니다.</p>
+      <div class="site-fields">
+        <div class="field"><label for="f-er">지정 병원 · 위치</label><input id="f-er" placeholder="병원명 · 주소 · 전화" /></div>
+      </div>
+      <div class="pocket">
+        <h2 id="pocketTitle">개인 소지 카드</h2>
+        <p id="pocketLead">사나이픽처스 · 나 혼자만 레벨업 — 2026.08.16 거미 보스룸</p>
+        <div class="pocket-card" id="pocketCard">
+          <h3>PERSONAL SAFETY CARD</h3>
+          <div class="pocket-meta">
+            <span id="c-name">이름: —</span>
+            <span id="c-team">소속: —</span>
+          </div>
+          <div class="pocket-cols">
+            <div>
+              <h4>이 팀 핵심 수칙</h4>
+              <ul id="c-rules"></ul>
+            </div>
+            <div class="evac">
+              <h4>위험 시 · 화재 대피</h4>
+              <ul id="c-evac"></ul>
+            </div>
+          </div>
+          <div class="contacts">
+            <ul>
+              <li>위치: 연천 21세기 스튜디오 · 거미 보스룸 · 황지로 240-23</li>
+              <li>응급 구조대: 119 · 군남 119 안전센터 031-830-0541 (5.2km)</li>
+              <li>연천소방서: 031-830-0119 (6.0km)</li>
+              <li id="c-er">지정 병원: 연천군 보건의료원 031-839-4119 (6.3km)</li>
+              <li id="c-leads">이 팀 책임자: —</li>
+              <li>안전관련 문의: (주)류앤씨안전보건기술연구원 <a class="phone-link" href="tel:15518319">1551-8319</a></li>
+            </ul>
+          </div>
+        </div>
+        <button class="print-btn" type="button" id="printBtn">이 카드 인쇄 / PDF 저장</button>
+      </div>
+    </section>
+
+    <footer>
+      <strong>SANAI PICTURES  ·  나 혼자만 레벨업</strong>
+      <p>2026.08.16 거미 보스룸 현장 안전수칙. 위험성평가·팀별 안전보건점검표·일일촬영계획표를 작업자 행동 중심으로 재구성했습니다. TBM, 허가, 자격, 작업계획서를 대체하지 않습니다.</p>
+    </footer>
+  </div>
+
+  <nav class="dock">
+    <a href="#today">오늘</a>
+    <a href="#common">공통</a>
+    <a href="#myteam">내 팀</a>
+    <a href="#emergency">비상</a>
+    <a href="#card">카드</a>
+  </nav>
+
+  <script>
+    const TEAMS = {
+      camera: {
+        name: "촬영팀",
+        code: "CAMERA",
+        rank: "A",
+        leads: [
+          { name: "이주연", role: "촬영 퍼스트", phone: "010-8950-9676" },
+          { name: "손만곤", role: "그립팀장", phone: "010-9566-2195" },
+          { name: "정기용", role: "DIT 실장", phone: "010-4204-4557" }
+        ],
+        rules: [
+          "크레인·지브는 자격자만 조종한다. 스윙 전 반경 안 인원을 눈으로 확인하고 신호수 지시에 따른다.",
+          "고소(4m 이상) 촬영은 안전대·안전모 체결 후에만 올라간다. 안전고리 없이 붐에 타지 않는다.",
+          "바디·지미집 고정과 낙하방지 안전줄을 확인한 뒤 롤링한다. 장비가 빠질 상태로 움직이지 않는다.",
+          "크레인 관절부·리그 구동 중에 손을 넣지 않는다. 비상정지 위치를 알고 있는다.",
+          "바닥 케이블에 커버를 씌운다. 어두운 보스룸에서 케이블·거미줄 소품을 발로 더듬지 않는다.",
+          "빗물·누수로 바닥·장비가 젖으면 카메라 전원·모니터·충전기를 끄고 뽑는다. 젖은 상태로 켜지 않는다.",
+          "야간·암부에서는 작업구역 조명이 켜진 통로로만 이동한다. 사다리·단차를 확인하지 않고 오르지 않는다.",
+          "액션·와이어 동선은 합동 미팅에서 확인한다. 세이프 선언 전 렌즈를 들이밀지 않는다.",
+          "폭파 분진 씬은 3-2-1 신호 후에만 포지션에 들어간다. 카운트 중 위치를 바꾸지 않는다.",
+          "화약·스파크 근접 카메라·배선은 내열 커버하고 이격한다. SFX와 전력 계통을 섞지 않는다.",
+          "달리·핸드헬드 이동 경로를 사전에 걷는다. 배우·대역 구르기 동선과 장비가 겹치면 HOLD한다.",
+          "중량 장비는 2인 이상·보조 장비로 옮긴다. 평탄하지 않은 세트에서 혼자 들지 않는다.",
+          "강풍·이상 진동 시 크레인을 멈추고 하차한다. 붐 아래를 통과하지 않는다.",
+          "철수 시 고소 장비를 안전 거치하고, 동선을 나눠 다른 팀과 부딪히지 않는다."
+        ],
+        evac: [
+          "“스톱!”이면 롤링을 즉시 끊는다. 컷을 살리려 레드존에 남지 않는다.",
+          "크레인 전도 징후: 붐이 쓰러지는 쪽·붐 아래가 아니라 회전 반경 밖으로 나간다.",
+          "화재·연기: 장비를 두고 지정 비상구(2개소)로 나간다. 폭파 방향·화약 쪽으로 뛰지 않는다.",
+          "감전·누전: 차단 권한자만 전원을 끊고, 나머지는 물·케이블에서 떨어진다. 젖은 손으로 감전된 사람을 붙잡지 않는다.",
+          "집결지에서 팀장에게 인원을 보고하고, 허가 전 재진입하지 않는다.",
+          "고소에 남은 사람이 있으면 뛰어내리라고 하지 말고 지정 하강로로 유도한다."
+        ]
+      },
+      sfx: {
+        name: "특수효과팀",
+        code: "SFX",
+        rank: "S",
+        leads: [
+          { name: "김혜진", role: "VFX/특수효과 총괄", phone: "010-3982-1231" }
+        ],
+        rules: [
+          "화약류는 면허 소지자만 취급·점화한다. 보관함 잠금·표지를 확인하고 화기를 멀리한다.",
+          "작업 반경은 관계자 외 출입통제한다. 배우·스태프 안전거리를 표시하고 사전 교육한다.",
+          "본촬영 전 테스트(공포 리허설) 없이 점화하지 않는다. 3-2-1-발화는 무전으로 공유한다.",
+          "점화 전 풍향·습도와 가연성 세트·소품 방호를 확인한다. 미완료면 HOLD하고 AD에게 알린다.",
+          "스파크 배선은 전원 차단·절연 확인 후에만 만진다. 활선에 손대지 않는다.",
+          "소나기·누수로 바닥이 젖으면 전기 스파크·점화 배선을 하지 않는다. 절연 확인 전까지 HOLD한다.",
+          "정전기 방지 조치를 하고, 점화계통 이중 안전장치를 해제한 뒤에만 장전한다.",
+          "밀폐 보스룸에서 CO2·드라이아이스·연기를 함부로 쓰지 않는다. 환기·산소 확인 후에만 사용한다.",
+          "약품 취급 시 방진마스크·내화학 장갑을 착용한다. MSDS를 숙지한다.",
+          "미폭·잔여 화약은 전문 절차로만 처리한다. 당일 반납 전 임의 접근을 막는다.",
+          "효과 종료 후 불씨·잔재·유독가스를 SFX가 확인한 뒤에만 진입을 허가한다.",
+          "소화기(CO2·분말) 위치와 대피로를 점화 전에 다시 본다. 핫존을 마지막으로 비운다.",
+          "재촉이 와도 허가·거리·리허설이 없으면 점화하지 않는다.",
+          "무선 기폭 전 전파 간섭을 확인하고, 카운트 중 다른 팀이 들어오면 즉시 중단한다."
+        ],
+        evac: [
+          "오발·미폭 시 “스톱!” 후 핫존을 소개한다. 책임자 허가 전 접근하지 않는다.",
+          "화재: 소규모만 진화한다. 화약고·연료 쪽으로 몰리지 말고 바람 반대 비상구로 나간다.",
+          "밀폐 연기·질식 징후면 호흡 보호 없이 재진입하지 말고 119·집결지를 우선한다.",
+          "대피 시 점화 장치를 안전 위치로 두고 마지막으로 핫존을 비운다.",
+          "클리어 여부를 AD·안전관리자에게 보고한 뒤에만 현장이 다시 열린다.",
+          "잔여 불씨는 효과 종료 체크리스트로 확인하고, 미확인 상태로 철수하지 않는다."
+        ]
+      },
+      stunt: {
+        name: "무술·와이어팀",
+        code: "STUNT/WIRE",
+        rank: "S",
+        leads: [
+          { name: "한정욱", role: "무술감독", phone: "010-8840-5135" }
+        ],
+        rules: [
+          "무술감독 NO면 배우 OK여도 중단한다. 확정된 안무·동선만 수행한다.",
+          "오늘 와이어 세팅(13:10, 15:40, 17:40)에는 폴 존에 들어가지 않는다. 리거 클리어 전 대기한다.",
+          "하네스·잠금 고리는 본인 외 최소 2명이 더블 체크한다. 가리개로 잠금을 막지 않는다.",
+          "하중 테스트·보조 안전줄 없이 본촬영 와이어를 타지 않는다. 앵커는 전문 리거가 확인한다.",
+          "컷 후에도 리거가 릴리즈할 때까지 움직이지 않는다. 줄을 자르지 않는다.",
+          "도르래·윈치에 손·의복을 넣지 않는다. 장력 해제 확인 전에 장비를 회수하지 않는다.",
+          "폭파 분진과 겹치는 테이크는 SFX 타이밍을 맞춘 뒤에만 간다. 내화·보호대를 빼지 않는다.",
+          "리허설은 슬로 → 하프 → 본촬영 순이다. 즉흥 점프·구르기를 추가하지 않는다.",
+          "어두운 세트에서 착지점·매트를 표시·조명으로 확인한 뒤 뛴다. 거미줄 소품에 발이 걸리지 않게 한다.",
+          "사다리·리깅 타워는 안전대·2인 1조로 오른다. 혼자 앵커를 손대지 않는다.",
+          "피로·어지럼·열탈진이 있으면 보고하고 와이어를 타지 않는다. 전곡 고습·체감 더위, 횟수를 제한한다.",
+          "차량·모형 화기 소품이 있으면 실물과 구분됐는지 확인하고, 보호구를 의상보다 우선한다.",
+          "씬 종료 후 본인·동료 부상을 즉시 확인하고 메딕에게 알린다."
+        ],
+        evac: [
+          "동작 중 “스톱!”이면 약속된 어보트로 정지한다. 즉흥으로 이어가지 않는다.",
+          "공중에 멈춘 경우 줄을 자르지 말고 리거가 내린다. 버클을 혼자 풀지 않는다.",
+          "추락 시 함부로 일으켜 세우지 말고 메딕을 부른다. 폴 존으로 몰려들지 않는다.",
+          "화재가 리깅에 접근하면 하강·소개 후 비상구로 나간다. 팽팽한 와이어를 가로질러 뛰지 않는다.",
+          "발파 직후 핫존에 남지 않는다. SFX 세이프 후 이동한다.",
+          "집결지에서 출연·스턴트 인원을 확인하고 코디네이터에게 보고한다."
+        ]
+      },
+      art: {
+        name: "미술팀",
+        code: "ART",
+        rank: "A",
+        leads: [
+          { name: "신지혜", role: "아트디렉터", phone: "010-8530-9692" }
+        ],
+        rules: [
+          "고소 세트(2m 이상)·사다리는 안전발판·안전대·안전모·보조자 없이 오르지 않는다.",
+          "사다리는 평탄한 지면에 세운다. 꼭대기에 올라 몸을 기울이거나 공구를 던지지 않는다.",
+          "어두운 던전에서는 작업등을 켜고 이동한다. 단차·열린 바닥·거미줄은 표시하고 치우지 않으면 보고한다.",
+          "통행로 최소 60cm와 비상구 2개소를 자재로 막지 않는다. 적재 높이는 2m 이하.",
+          "낙하물 구역을 테이프로 막고 하부로 지나가지 않는다. 고소 작업 중 하부 통제를 유지한다.",
+          "전동공구는 덮개·피복을 확인한 뒤 쓴다. 어두운 곳에서 코드에 걸리지 않게 정리한다.",
+          "누수로 세트 콘센트·임시 배선·전동공구가 젖으면 사용을 멈추고 전원을 뽑은 뒤 조명팀에 알린다. 젖은 채로 켜지 않는다.",
+          "도료·신나·폼은 전용함에 두고 화기와 격리한다. 화기작업 시 감시인·소화기를 둔다.",
+          "우레탄·스티로폼은 방염 처리한다. SFX 화염 거리 협의 전 가연성 세트를 올리지 않는다.",
+          "크레인 하중·와이어 앵커가 붙을 구조 강도를 확인하기 전에는 세트를 넘기지 않는다.",
+          "폭파 파편 방향을 세트에 반영한다. SFX 클리어 전 무너진 구조에 들어가지 않는다.",
+          "위험 씬 롤링 중에는 세트를 손보러 들어가지 않는다. AD·SFX 통제만 따른다.",
+          "중량 자재는 2인 이상. 철거·운반 중 PPE를 착용하고 날카로운 자재를 노출하지 않는다.",
+          "작업 전 TBM에 참석하고, 고소·사다리차 작업은 허가 없이 시작하지 않는다."
+        ],
+        evac: [
+          "“스톱!” 시 공구를 놓고 지정 통로·비상구로 나간다. 세트를 지키러 돌아가지 않는다.",
+          "화재: 페인트·용제·자재 적재를 피해 지정 집결지로 이동한다.",
+          "폭발 후 붕괴가 의심되는 구조물은 SFX·안전 클리어까지 재진입하지 않는다.",
+          "무너진 벽·와이드 세트 잔해를 밟거나 지탱하려 하지 않는다.",
+          "고소에 있으면 뛰어내리지 말고 사다리·지정 하강로로 내려온다.",
+          "집결지에서 인원을 보고하고, 원상복구는 안전 선언 이후에만 한다."
+        ]
+      },
+      props: {
+        name: "소품팀",
+        code: "PROPS",
+        rank: "A",
+        leads: [
+          { name: "손선영", role: "소품실장", phone: "010-6241-9717" }
+        ],
+        rules: [
+          "날카로운 소품은 보호 포장 후 운반하고, 사용 직후 회수한다. 세트에 방치하지 않는다.",
+          "중량 소품은 2인 1조다. 어두운 세트에서 혼자 들고 사다리를 오르지 않는다.",
+          "소품이 통행로·비상구·폴 존·크레인 반경을 막지 않게 놓는다.",
+          "거미줄·다리 등 크리처 소품은 발걸림 표시를 한다. 배우 동선과 겹치면 AD에게 알린다.",
+          "모형 화기·폭발물 형태는 실물과 구분 표시하고 무술팀에 사전 공유한다.",
+          "화염·폭파 근접 소품은 SFX와 협의·방호 후에만 세트에 올린다.",
+          "인화성 내용물이 든 소품은 확인하고 제거한다. 화기에서 멀리 보관한다.",
+          "전기 소품은 접지·절연을 확인한다. 누수·젖은 바닥 구역의 전기 소품은 전원을 끄고 회수한다. 젖은 채로 켜지 않는다.",
+          "위험 씬 롤링 중에는 소품을 고치러 레드존에 들어가지 않는다. 통제 해제 후 들어간다.",
+          "대형 소품 설치·철거 시 안전구역을 만들고 유도원을 둔다.",
+          "사다리로 소품을 달 때 안전대·보조자를 둔다. 꼭대기에서 손뻗지 않는다.",
+          "배우가 직접 쓰는 소품은 사전 테스트한다. 식용 불가·도료 처리 음식은 고지한다.",
+          "반입·반출 수량과 상태를 기록한다. 위험 소품은 씬 종료 후 즉시 잠가 보관한다."
+        ],
+        evac: [
+          "“스톱!”이면 소품을 두고 지정 비상구로 나간다. 회수하러 레드존에 돌아가지 않는다.",
+          "화재 시 인화성 소품 적재를 피해 이동한다. 모형 화약류 쪽으로 몰리지 않는다.",
+          "날카로운 소품이 바닥에 있으면 대피 인원에게 큰 소리로 알리고 우회한다.",
+          "대형 소품이 통로를 막으면 밀지 말고 다른 비상구를 쓴다.",
+          "집결지에서 인원을 보고하고, 허가 전 재진입하지 않는다.",
+          "클리어 후 위험 소품부터 회수하고 수량을 맞춘다."
+        ]
+      },
+      light: {
+        name: "조명팀",
+        code: "G&E",
+        rank: "A",
+        leads: [
+          { name: "윤재국", role: "조명 퍼스트", phone: "010-5112-1882" }
+        ],
+        rules: [
+          "고소·사다리·그리드 작업은 안전모·안전대·공구 랜야드 체결 후에만 한다. 안전고리 없이 올라가지 않는다.",
+          "사다리는 수평을 맞추고 2인 1조로 오른다. 어두운 천장 쪽을 혼자 오르지 않는다.",
+          "대형 조명은 세이프티 케이블을 이중 체결한 뒤에만 켠다. 하부 출입통제를 한다.",
+          "어두운 보스룸에서는 작업등을 켠 채 이동한다. 스탠드·단차·거미줄에 걸리게 케이블을 깔지 않는다.",
+          "케이블은 커버하고 비상구를 막지 않는다. 촬영 전 누전차단기를 테스트하고 메인 차단기 위치를 안다.",
+          "소나기·폭우·천장 누수 시 분전반·디머·조명기를 바닥에서 띄우고 덮는다. 물이 닿은 기구는 전원을 내리고, 건조·절연 확인 전에 재투입하지 않는다. 누전차단기가 떨어지면 원인 확인 전에 올리지 않는다.",
+          "조명 과열을 30분마다 본다. 우레탄·스티로폼과 최소 1m를 띄운다.",
+          "화약·화염 씬 전 SFX 철수 신호를 확인한다. 열원 근접 조명을 빼지 않으면 HOLD한다.",
+          "크레인과 같은 높이에서 작업하지 않는다. 그립·AD와 구역을 나눈다.",
+          "중량 스탠드는 2인 이상. 평탄하지 않은 세트에 세울 때 수평을 맞춘다. 낙하방지 로프를 건다.",
+          "SFX 스파크와 조명 전력을 분리한다. 절연 장갑 없이 활선 접속하지 않는다.",
+          "철거는 고온 냉각 후, 순차적으로, 하부 통제 하에 한다. 고소 해체 중 아래로 공구를 던지지 않는다.",
+          "분전반 용량을 넘기지 않는다. 자리를 비울 때 과열 조명을 방치하지 않는다.",
+          "강풍·폭발 진동 전 고정 상태를 재점검한다. 이상 시 전원을 끄고 내린다."
+        ],
+        evac: [
+          "“스톱!” 시 고소에서 뛰어내리지 말고 지정 하강로로 내려온다. 랜야드는 유지한다.",
+          "감전·누전·케이블 화재: 차단 권한자만 전원을 끊고, 나머지는 물·케이블에서 떨어져 집결한다. 젖은 손으로 감전된 사람을 붙잡지 않는다.",
+          "화재 시 조명 열원·가연성 세트 사이를 지나지 말고 지정 비상구로 나간다.",
+          "크레인 충돌 위험 시 붐 반경 밖으로 나간다. 트러스 안쪽으로 숨지 않는다.",
+          "집결 후 팀장이 고소 잔류 인원을 호명한다.",
+          "재진입은 전원 안전과 AD 허가 후에만 한다."
+        ]
+      },
+      costume: {
+        name: "분장·의상",
+        code: "H/M",
+        rank: "B",
+        leads: [
+          { name: "조서아", role: "의상팀장", phone: "010-5505-2915" },
+          { name: "김나현", role: "분장팀장", phone: "010-9594-5644" }
+        ],
+        rules: [
+          "인화성 스프레이·접착제를 화기·조명열과 분리 보관한다. 세트·레드존에서 뿌리지 않는다.",
+          "화염·폭파 근접 의상·가발·분장은 난연인지 SFX와 확인한 뒤에만 올린다.",
+          "와이어 장면은 하니스 피팅 시간을 넣는다. 잠금 고리를 가리개로 막지 않는다.",
+          "긴 스카프·장신구 등 와이어·거미줄에 걸릴 장식을 제거한다. 보호구를 빼지 않는다.",
+          "어두운 세트에서 배우를 이동시킬 때 통로등·스폿터를 둔다. 사다리 동선에 트레인을 끌지 않는다.",
+          "특수분장·크리처 근접 의상은 장시간 열·피부 이상을 주기적으로 확인한다. 전곡 고습, 체감 더위.",
+          "이상 반응(두드러기·호흡곤란)이면 작업을 멈추고 메딕을 부른다. 억지로 촬영을 이어가지 않는다.",
+          "분장실 고데기·드라이어는 과부하를 막고, 자리를 비울 때 전원을 끈다. 물이 닿거나 바닥이 젖으면 끄고 뽑는다. 젖은 손으로 플러그를 만지지 않는다.",
+          "유기용제·에어브러시는 환기되는 곳에서만 쓰고 방독마스크를 착용한다.",
+          "위험 씬 롤링 중 터치업하러 레드존에 들어가지 않는다. 통제 해제 후 들어간다.",
+          "바늘·가위·핀은 전용 케이스에 넣고 어두운 바닥에 떨어뜨리지 않는다.",
+          "라텍스 알레르기·패치 테스트를 확인하고, 대체 재료가 없으면 해당 분장을 올리지 않는다.",
+          "폐기물(라텍스·약품)은 분리 배출한다. 화기 옆에 쌓지 않는다."
+        ],
+        evac: [
+          "“스톱!” 시 의상·가발을 가지러 세트에 돌아가지 않는다.",
+          "옷에 불이 붙으면 멈추고 바닥에 누워 굴러 끈다. 물·소화기를 사용한다.",
+          "와이어 착용 중이면 리거가 해제한 뒤에 이동한다.",
+          "배우를 지정 비상구로 안내하고, 연기·분장 트랙이 통로를 막지 않게 비운다.",
+          "집결지에서 배우·스턴트 의상 착용 인원을 확인하고 팀장에게 보고한다.",
+          "밀폐 분장실에 약이 타면 문을 닫고 대피한 뒤 119에 알린다."
+        ]
+      },
+      creature: {
+        name: "크리처팀",
+        code: "CREATURE",
+        rank: "S",
+        leads: [
+          { name: "김혜진", role: "VFX/특수효과 총괄", phone: "010-3982-1231" },
+          { name: "신지혜", role: "아트디렉터", phone: "010-8530-9692" }
+        ],
+        rules: [
+          "대형 거미 다리·입을 움직이기 전 스폿터와 동작 범위를 확인한다. 표시 반경 밖에 사람이 있을 때만 구동한다.",
+          "어두운 세트에서 수신호만 믿지 말고 무전·콜사인으로 확인한다. 응답 없으면 구동하지 않는다.",
+          "배우·대역의 구르기·점프 동선과 다리 스윙이 겹치면 즉시 정지한다. 컷을 살리려 이어가지 않는다.",
+          "폭파 분진 씬에서는 SFX 신호 전 크리처를 구동하지 않는다. 카운트다운 중 리허설 구동도 금지.",
+          "슈트·내부 작업자는 테이크 사이 냉각한다. 어지럼·메스꺼움이면 즉시 벗고 메딕을 부른다. 전곡 고습.",
+          "케이블·유압·기계 구동부에 손·의복을 넣지 않는다. 비상정지 위치를 알고 있는다.",
+          "누수로 구동 전원·케이블이 젖으면 전원을 차단하고 구동하지 않는다. 절연 확인 전에 재통전하지 않는다.",
+          "사다리로 슈트·다리를 정비할 때 안전대·보조자를 둔다. 어두운 천장 쪽을 혼자 오르지 않는다.",
+          "거미줄 소품이 통로를 가로막으면 치우거나 표시한다. 비상구를 가리면 즉시 보고한다.",
+          "위험 씬 통제(스톱/홀드)를 최우선한다. AD·무술·SFX 신호가 충돌하면 구동을 멈춘다.",
+          "중량 파트는 2인 이상 운반한다. 평탄하지 않은 세트에서 혼자 다리를 들지 않는다.",
+          "철거 전 잔여 장력·구동 전원을 차단한다. 장력 남은 상태로 분해하지 않는다.",
+          "클로즈업 시 주변 스태프에게 스윙 반경을 다시 알린다. 허가되지 않은 인원을 접근시키지 않는다.",
+          "작업 전 TBM에서 오늘 다리 공격·입 회피·POV 샷의 위험 반경을 공유한다."
+        ],
+        evac: [
+          "“스톱!”이면 구동을 즉시 멈추고 전원을 안전 위치로 둔다.",
+          "화재·연기 시 슈트를 현장에서 열거나 벗기고 비상구로 나간다. 혼자 잠긴 슈트를 방치하지 않는다.",
+          "기계에 사람이 끼면 구동을 멈추고 메딕을 부른다. 억지로 빼지 않는다.",
+          "대형 다리가 통로를 막으면 밀지 말고 다른 비상구를 쓴다.",
+          "집결지에서 슈트 착용 인원을 호명한다. 미하차자가 있으면 AD에게 즉시 알린다.",
+          "재진입은 전원 차단 확인과 허가 후에만 한다."
+        ]
+      },
+      ad: {
+        name: "연출·제작",
+        code: "AD/PROD",
+        rank: "S",
+        leads: [
+          { name: "안영석", role: "조감독", phone: "010-8071-1087" },
+          { name: "배광표", role: "제작부장", phone: "010-2609-9177" }
+        ],
+        rules: [
+          "TBM에서 오늘 와이어 세팅 시각, 폭파 씬, 레드존, 비상구 2개소, 집결지를 전 스태프에게 알린다.",
+          "누구든 HOLD·“스톱!”이면 롤링하지 않는다. 중단을 요청한 사람을 탓하지 않는다.",
+          "와이어 세팅·테스트 중(13:10, 15:40, 17:40) 다른 부서 진입을 막는다. 구경 인원을 세운다.",
+          "폭파 분진 씬은 SFX 리허설·거리·카운트다운이 끝나기 전에 카메라를 돌리지 않는다.",
+          "어두운 세트 통로등·사다리·단차 표시를 미술·조명과 확인하고, 미표시면 촬영을 시작하지 않는다.",
+          "재촉으로 화약·와이어·고소·크리처 구동을 앞당기지 않는다.",
+          "콜시트에 통제구역·담당자·기상(전곡 소나기·고습)을 적는다. 누수·누전 보고가 오면 해당 구역 롤링을 즉시 멈춘다. 조명 퍼스트 클리어 전 재개하지 않는다.",
+          "신규·협력·엑스트라에게 통제선, 스톱, 대피를 따로 설명한다.",
+          "비상구가 장비·자재에 막히면 즉시 치우게 한다. 수시로 순회한다.",
+          "의료 인력·구급함 위치를 고위험 블록 전에 다시 공지한다.",
+          "크리처·무술·SFX·촬영 신호가 겹치면 한 사람(AD)이 최종 콜을 낸다.",
+          "식사(18:00) 전후 피로도를 확인하고, 야간 고위험 컷의 횟수를 제한한다.",
+          "클리어와 재개 조건이 나오기 전 다음 셋업을 레드존에서 시키지 않는다."
+        ],
+        evac: [
+          "위험 목격 즉시 무전으로 “스톱!”을 반복하고 전 장비 가동을 멈춘다.",
+          "119·메딕 호출의 주체는 AD·안전관리자다. 위치를 ‘연천 21세기 스튜디오, 거미 보스룸’으로 말한다.",
+          "지정 비상구·집결지로 부서별 이동을 지시하고 헤드카운트를 받는다.",
+          "폭발·붕괴·화재 구역으로 촬영·소품 회수를 보내지 않는다.",
+          "고소·슈트 잔류 인원을 팀장에게 확인한다.",
+          "안전 클리어 전 카메라를 돌리지 않고 재진입을 허가하지 않는다."
+        ]
+      },
+      other: {
+        name: "기타 스태프",
+        code: "CREW",
+        rank: "E",
+        leads: [
+          { name: "배광표", role: "제작부장", phone: "010-2609-9177" },
+          { name: "정수영", role: "붐 오퍼레이터", phone: "010-4560-1138" }
+        ],
+        rules: [
+          "TBM에 참석하고 오늘 레드존·와이어 세팅 시각·폭파 씬·비상구를 확인한다.",
+          "지급 PPE를 착용한다. 비인가 구역·폴 존·크레인 반경에 들어가지 않는다.",
+          "화약·와이어·크리처를 구경하러 가까이 가지 않는다. 통제선 뒤에서 대기한다.",
+          "어두운 세트에서는 지정 통로등으로만 이동한다. 거미줄·케이블·사다리를 밟거나 오르지 않는다.",
+          "사다리가 필요하면 해당 팀 자격·보조자에게 맡긴다. 임의로 올라가지 않는다.",
+          "위험 씬 카운트다운 중 위치를 바꾸지 않는다. 신호가 없으면 들어가지 않는다.",
+          "“스톱!”이 들리면 하던 일을 즉시 멈춘다.",
+          "통행로·비상구를 가방·케이스로 막지 않는다. 막혀 있으면 AD에게 알린다.",
+          "피로·어지럼·열탈진은 팀장에게 보고하고 휴식을 받는다. 전곡 고습.",
+          "소나기·누수 시 젖은 콘센트·멀티탭·케이블을 만지지 않는다. 물이 고이면 조명팀·AD에게 알리고 그 구역을 비운다.",
+          "화재 시 장비를 두고 지정 비상구로 나간다. 낮은 자세, 연기 반대 방향.",
+          "부상자 발견 시 메딕을 부르고 임의로 옮기지 않는다.",
+          "재진입은 안전관리자·AD 허가 후에만 한다.",
+          "모르는 장비·화약·와이어를 만지지 않는다."
+        ],
+        evac: [
+          "“스톱!”이면 지정 대피 통로로 나간다. 크레인 아래·폭파 방향·연기 쪽으로 뛰지 않는다.",
+          "장비를 가지러 돌아가지 않는다.",
+          "사다리·고소에 있으면 뛰어내리지 말고 내려온 뒤 비상구로 이동한다.",
+          "집결지에서 팀장에게 인원을 보고한다.",
+          "부상자 옆을 지키되, 2차 사고 위험이 있으면 함께 대피하고 위치를 무전한다.",
+          "허가 전 재진입하지 않는다."
+        ]
+      }
+    };
+
+    const fields = [
+      ["f-er", "setSafety.er", "c-er", "지정 병원"]
+    ];
+    const FIELD_DEFAULTS = {
+      "setSafety.er": "연천군 보건의료원 031-839-4119 (6.3km)"
+    };
+
+    function storeGet(key) {
+      try { return localStorage.getItem(key); } catch (e) { return null; }
+    }
+    function storeSet(key, val) {
+      try { localStorage.setItem(key, val); } catch (e) { /* file:// 또는 비공개 모드 */ }
+    }
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+    function listHtml(items) {
+      return items.map((t) => "<li>" + escapeHtml(t) + "</li>").join("");
+    }
+    function leadText(team) {
+      return (team.leads || []).map((l) => l.name + " · " + l.role + " " + l.phone).join(" / ");
+    }
+    function renderLeads(team) {
+      const box = document.getElementById("myTeamLeads");
+      box.innerHTML = "";
+      (team.leads || []).forEach((l) => {
+        const row = document.createElement("div");
+        row.className = "lead-item";
+        const tag = document.createElement("span");
+        tag.className = "sub-label";
+        tag.textContent = "팀 책임자";
+        const b = document.createElement("b");
+        b.textContent = l.name;
+        const role = document.createElement("span");
+        role.textContent = l.role;
+        const a = document.createElement("a");
+        a.className = "phone-link";
+        a.href = "tel:" + l.phone.replace(/-/g, "");
+        a.textContent = l.phone;
+        row.appendChild(tag);
+        row.appendChild(b);
+        row.appendChild(role);
+        row.appendChild(a);
+        box.appendChild(row);
+      });
+      const line = leadText(team);
+      const leadsEl = document.getElementById("c-leads");
+      if (leadsEl) leadsEl.textContent = line ? ("이 팀 책임자: " + line) : "이 팀 책임자: —";
+    }
+
+    let selectedTeam = storeGet("setSafety.team") || "";
+
+    function fillTeamGrid(el, withSelect) {
+      el.innerHTML = "";
+      Object.entries(TEAMS).forEach(([id, team]) => {
+        const btn = document.createElement("button");
+        btn.className = "team-btn" + (selectedTeam === id ? " on" : "");
+        btn.type = "button";
+        btn.dataset.team = id;
+        btn.setAttribute("aria-pressed", selectedTeam === id ? "true" : "false");
+        btn.innerHTML = "<small>" + escapeHtml(team.code) + "</small><b>" + escapeHtml(team.name) + "</b>";
+        btn.addEventListener("click", () => {
+          selectedTeam = id;
+          storeSet("setSafety.team", id);
+          el.querySelectorAll(".team-btn").forEach((b) => {
+            const on = b.dataset.team === id;
+            b.classList.toggle("on", on);
+            b.setAttribute("aria-pressed", on ? "true" : "false");
+          });
+          if (withSelect) onGateTeam();
+        });
+        el.appendChild(btn);
+      });
+    }
+
+    function onGateTeam() {
+      const box = document.getElementById("gateNameBox");
+      const name = document.getElementById("g-name");
+      box.classList.add("ready");
+      document.getElementById("gateStep").textContent = "STEP 2 / 2 · 이름 기입 — " + TEAMS[selectedTeam].name;
+      name.disabled = false;
+      name.focus();
+      syncEnter();
+    }
+
+    function syncEnter() {
+      const name = document.getElementById("g-name").value.trim();
+      document.getElementById("enterBtn").disabled = !(selectedTeam && name);
+    }
+
+    function openGate() {
+      document.getElementById("gateScreen").classList.remove("hidden");
+      document.body.classList.add("gated");
+      fillTeamGrid(document.getElementById("gateTeamGrid"), true);
+      const savedName = storeGet("setSafety.name") || "";
+      const savedRole = storeGet("setSafety.role") || "";
+      document.getElementById("g-name").value = savedName;
+      document.getElementById("g-role").value = savedRole;
+      if (selectedTeam && TEAMS[selectedTeam]) onGateTeam();
+      else {
+        document.getElementById("g-name").disabled = true;
+        document.getElementById("gateNameBox").classList.remove("ready");
+      }
+      syncEnter();
+    }
+
+    function closeGate() {
+      document.getElementById("gateScreen").classList.add("hidden");
+      document.body.classList.remove("gated");
+    }
+
+    function enterSite() {
+      const name = document.getElementById("g-name").value.trim();
+      const role = document.getElementById("g-role").value.trim();
+      if (!selectedTeam || !name) return;
+      storeSet("setSafety.team", selectedTeam);
+      storeSet("setSafety.name", name);
+      storeSet("setSafety.role", role);
+      closeGate();
+      renderAll();
+      window.scrollTo(0, 0);
+    }
+
+    function renderAll() {
+      const id = storeGet("setSafety.team");
+      const team = TEAMS[id];
+      const name = (storeGet("setSafety.name") || "").trim();
+      const role = (storeGet("setSafety.role") || "").trim();
+      const who = name || "이름 미기입";
+      const chip = document.getElementById("playerChip");
+      chip.innerHTML = "";
+      if (team) {
+        chip.appendChild(document.createTextNode(who + " · " + team.name + " "));
+        const change = document.createElement("button");
+        change.type = "button";
+        change.textContent = "변경";
+        change.addEventListener("click", openGate);
+        chip.appendChild(change);
+      }
+
+      if (!team) return;
+
+      document.getElementById("myTeamTitle").textContent = "3. " + team.name + " 핵심 안전수칙";
+      document.getElementById("myTeamBar").textContent = team.name + " · 작업자 행동 수칙 " + team.rules.length + "항";
+      document.getElementById("myTeamRank").textContent = team.rank;
+      document.getElementById("myTeamSub").textContent = team.code + " — 위험성평가 · 점검표 · 오늘 거미 보스룸 스케줄";
+      renderLeads(team);
+      document.getElementById("myTeamRules").innerHTML = listHtml(team.rules);
+      document.getElementById("myTeamEvac").innerHTML = listHtml(team.evac);
+
+      const nameLine = role ? "이름: " + name + " · " + role : "이름: " + name;
+      document.getElementById("c-name").textContent = nameLine;
+      document.getElementById("c-team").textContent = "소속: " + team.name + " (" + team.code + ")";
+      document.getElementById("pocketTitle").textContent = team.name + " 개인 소지 카드";
+      document.getElementById("pocketLead").textContent = "사나이픽처스 · 나 혼자만 레벨업 — 2026.08.16 거미 보스룸 · " + team.name;
+      document.getElementById("c-rules").innerHTML = listHtml(team.rules);
+      document.getElementById("c-evac").innerHTML = listHtml(team.evac);
+
+      fields.forEach(([fid, key, cid, label]) => {
+        const val = document.getElementById(fid).value.trim();
+        document.getElementById(cid).textContent = val ? (label + ": " + val) : (label + ": (상단에 작성)");
+      });
+    }
+
+    fillTeamGrid(document.getElementById("gateTeamGrid"), true);
+
+    document.getElementById("g-name").addEventListener("input", syncEnter);
+    document.getElementById("g-name").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") enterSite();
+    });
+    document.getElementById("enterBtn").addEventListener("click", enterSite);
+
+    fields.forEach(([id, key]) => {
+      const el = document.getElementById(id);
+      const saved = storeGet(key);
+      if (saved !== null && saved !== "") el.value = saved;
+      else if (FIELD_DEFAULTS[key]) {
+        el.value = FIELD_DEFAULTS[key];
+        storeSet(key, el.value);
+      }
+      el.addEventListener("input", () => {
+        storeSet(key, el.value);
+        renderAll();
+      });
+    });
+
+    document.getElementById("printBtn").addEventListener("click", () => window.print());
+
+    document.getElementById("menuBtn").addEventListener("click", () => {
+      const nav = document.getElementById("topNav");
+      const open = nav.classList.toggle("open");
+      document.getElementById("menuBtn").setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    document.getElementById("topNav").querySelectorAll("a").forEach((a) => {
+      a.addEventListener("click", () => {
+        document.getElementById("topNav").classList.remove("open");
+        document.getElementById("menuBtn").setAttribute("aria-expanded", "false");
+      });
+    });
+
+    const savedName = (storeGet("setSafety.name") || "").trim();
+    if (selectedTeam && TEAMS[selectedTeam] && savedName) {
+      closeGate();
+      renderAll();
+    } else {
+      openGate();
+    }
+  </script>
+</body>
+</html>
